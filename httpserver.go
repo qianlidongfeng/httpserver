@@ -26,9 +26,11 @@ func (this *HttpServer) Run(cfg Config) error{
 		WriteTimeout: cfg.WriteTimeOut * time.Millisecond,
 		Handler: this.mux,
 	}
-
-
-	return server.ListenAndServe()
+	if cfg.Https{
+		return server.ListenAndServeTLS(cfg.CertFile,cfg.KeyFile)
+	}else{
+		return server.ListenAndServe()
+	}
 }
 
 func (this *HttpServer) Bind(pattern string,hander func(w http.ResponseWriter,r *http.Request)){
